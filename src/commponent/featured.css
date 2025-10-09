@@ -1,0 +1,248 @@
+.featured-post {
+  --featured-card-height: 300px; /* central variable for tuning */
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0.7rem;
+  border-radius: 12px;
+  position: relative;
+  max-width: 720px; /* smaller card width */
+  width: min(95%, 720px);
+  margin: 0 auto;
+  overflow: hidden; /* clip any overflow so content stays inside fixed height */
+  height: var(--featured-card-height); /* use variable */
+  transform: translateY(-30%);
+  z-index: 2; /* above intro video */
+  box-shadow: 0 6px 22px rgba(0,0,0,.14);
+}
+
+.featured-post h1 {
+  margin: .25rem 0 .5rem 0;
+}
+
+/* Single .item flex block */
+.featured-post .item {
+  display: flex;
+  margin: 0 0 0.5rem 0;
+  gap: 0.8rem;
+  height: 100%;
+  align-items: center; /* vertically center image and content */
+  flex-direction: row; /* image left, content right */
+}
+
+/* Details column (text + meta) */
+.featured-post .item .featured-details{
+  order:1;
+  flex:1 1 auto;
+  padding-right:14px;
+  min-width:0; /* very important for flex children to allow truncation */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+  height: 100%;
+  justify-content: space-between; /* keep title/excerpt and meta spaced */
+  padding: 8px 0 8px 0;
+  position: relative;
+  z-index: 2; /* ensure details render above image in case of overlap */
+}
+
+/* Constrain image column so it doesn't overtake the card */
+.featured-post .item img {
+  order:1; /* image first (left) */
+  flex:0 0 160px;
+  width:160px;
+  max-width:160px;
+  /* Make image 70% of card height on desktop */
+  height: calc(var(--featured-card-height) * 0.7);
+  max-height: calc(100% - 60px);
+  object-fit: cover;
+  border-radius:8px;
+  /* lift the image a bit and create a bottom gap */
+  align-self: flex-start; /* align to top of the item */
+  margin-top: -8px; /* nudge image upward */
+  margin-bottom: 12px; /* visible gap between image bottom and card */
+  z-index: 1; /* image behind details */
+}
+
+/* Minor details like date / read-time */
+.featured-post .item .featured-details .minor-details {
+  display: flex;
+  width: 40%;
+  font-size: 13px;
+  font-weight: 300;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+/* Title: clamp to 2 lines */
+.featured-post .featured-details h3 {
+  overflow: hidden;
+  font-weight: 700;
+  font-size: 30px;
+  font-style: oblique;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin: 0;
+}
+
+/* Excerpt: clamp to 3 lines */
+.featured-post .item .featured-details p {
+  font-size: 14px;
+  overflow: hidden;
+  margin-top: 2px;
+  font-weight: 500;
+  color: #a48f8f;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+/* Top and bottom areas inside details: top grows, bottom reserved for meta */
+.featured-post .item .featured-details .top{
+  overflow:hidden;
+  flex:1 1 auto;
+  min-height:0;
+}
+.featured-post .item .featured-details .bottom{
+  flex:0 0 46px; /* fixed space for meta row so it's always visible */
+  display:flex;
+  align-items:center;
+}
+
+.featured-post .item .featured-details .meta-row{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+}
+
+.featured-post .item .featured-details .comment-count{
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  color:rgba(255,255,255,0.95);
+  font-weight:600;
+}
+
+.featured-post .item .featured-details p:hover {
+  color: rgba(152, 108, 67, 1);
+}
+
+.featured-post .item .featured-details hr {
+  margin-top: 6px;
+  height: 1px;
+  background-color: #a48f8f;
+  border: none;
+}
+
+/* Additional tidy rules */
+.featured-post .featured-details{
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.featured-post .minor-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  color: var(--muted);
+}
+
+.featured-post .featured-details h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.featured-post .featured-details p {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.featured-post .featured-details hr {
+  border: none;
+  height: 1px;
+  background: var(--muted);
+  opacity: .6;
+}
+
+/* Responsive: stack on small screens and allow auto height */
+@media (max-width: 768px) {
+  .featured-post .item {
+    flex-direction: column;
+  }
+  .featured-post{
+    height:auto; /* allow content to grow on smaller devices */
+    transform:translateY(-15%);
+  }
+  .featured-post .item img {
+    width: 100%;
+    max-width: none;
+    height: auto; /* natural scaling on mobile */
+    order: 0;
+    align-self: center;
+  }
+  .featured-post .featured-details h3 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .featured-post {
+    width: 92%;
+    transform: translateY(-15%);
+    padding: 10px;
+  }
+
+  .featured-post h1 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .featured-post .item .featured-details h3 {
+    font-size: 20px;
+  }
+
+  .featured-post .item .featured-details p {
+    font-size: 14px;
+  }
+
+  .featured-post .item .featured-details .minor-details {
+    font-size: 12px;
+  }
+
+  .featured-post .item .featured-details hr {
+    margin-top: 10%;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured-post {
+    width: 95%;
+    transform: translateY(0);
+    padding: 8px;
+    text-align: center;
+  }
+
+  .featured-post h1 {
+    font-size: 20px;
+  }
+
+  .featured-post .item .featured-details h3 {
+    font-size: 18px;
+  }
+
+  .featured-post .item .featured-details p {
+    font-size: 13px;
+  }
+
+  .featured-post .item .featured-details .minor-details {
+    font-size: 11px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

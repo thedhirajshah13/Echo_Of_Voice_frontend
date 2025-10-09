@@ -1,0 +1,46 @@
+.main_intro {
+  /* Full-bleed intro section */
+  margin-top: 10px;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  /* set a visual area (taller) while leaving space for the navbar */
+  min-height: 85vh;
+  background-color: #111;
+}
+
+@media (max-width: 768px) {
+  .main_intro { min-height: 60vh; }
+}
+
+.section-video {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+  z-index: 0;
+}
+
+.main_intro h1 {
+  position: relative;
+  color: white;
+  font-size: 2rem;
+  z-index: 1; /* above the video */
+}
+
+.title h1 {
+  font-size: 56px;
+  color: #fff;
+  font-weight: 900;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+.title p {
+  font-size: 25px;
+  color: #fff;
+  font-weight: 900;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}

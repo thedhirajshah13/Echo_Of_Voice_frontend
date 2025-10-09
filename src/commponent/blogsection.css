@@ -1,0 +1,160 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
+
+.blogsection{
+  margin-top:0;
+  display:grid;
+  gap:2rem; /* larger gap between cards */
+  justify-content:center; /* center the grid within the page */
+  justify-items:center; /* center items inside their cell */
+  width: min(100%, var(--max-width));
+  margin: 2.5rem auto;
+  align-items:start;
+  /* Default: desktop (wide) two fixed columns */
+  grid-template-columns: repeat(2, 340px);
+}
+.postCard{
+  background:#fff;
+  padding:1rem; /* slightly larger padding */
+  border-radius:10px;
+  box-shadow:0 8px 26px rgba(0,0,0,.09);
+  overflow:hidden;
+  min-height:240px; /* slightly shorter for narrow cards */
+  display:flex;
+  flex-direction:column;
+  width:340px; /* fixed card width to match grid column */
+}
+.postCard img{width:100%;height:150px;object-fit:cover;border-radius:8px}
+
+
+/* Tablet: fluid two columns */
+@media screen and (max-width: 1199px) and (min-width: 768px) {
+  .blogsection{
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    gap: 1rem;
+    width: 92%;
+  }
+}
+
+/* Mobile: single column */
+@media screen and (max-width: 767px) {
+  .blogsection{
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 95%;
+    justify-items: stretch;
+  }
+}
+.postCard h4 {
+  margin: 3% 0 1% 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+.postCard h4:hover {
+  color: rgba(152, 108, 67, 1);
+}
+.postCard hr {
+  width: 80%;
+  margin: 30px auto 10px auto;
+  border: none;
+  height: 0.1px;
+  background-color: #a48f8f;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.postCard span {
+  display: flex;
+  margin: 20px auto;
+  gap: 2px;
+}
+.postCard span svg {
+  margin-right: 2px;
+}
+
+.pagination{display:flex;align-items:center;justify-content:center;gap:1rem;margin:1.25rem auto 2rem;width:max-content;grid-column:1 / -1;justify-self:center}
+.pageNumbers{display:inline-flex;gap:10px;align-items:center;justify-content:center}
+.pagination button{min-width:38px;height:38px;border:1px solid rgba(0,0,0,.12);border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.pageNumber{
+  min-width:40px;
+  height:40px;
+  padding:0 12px;
+  border-radius:20px;
+  border:1px solid rgba(0,0,0,.12);
+  background: transparent;
+  color: var(--text);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition: all .18s ease;
+}
+.pageNumber:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.pageNumber.active{background:var(--color-accent);color:#fff;border-color:rgba(0,0,0,.12);box-shadow:0 8px 26px rgba(0,0,0,.12)}
+
+@media (max-width:480px){
+  .pageNumber{min-width:34px;height:34px;padding:0 8px}
+}
+@media (max-width:480px){
+  .pagination{width:95%;}
+  .pageNumbers{gap:6px}
+}
+
+/* For tablets & larger phones */
+@media (max-width: 768px) {
+  .blogsection {
+    margin-top: 0;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .blogsection {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    width: 92%;
+  }
+
+  .pagination {
+    margin: 0 auto;
+  }
+
+  .pagination button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* For mobile devices */
+@media (max-width: 480px) {
+  .blogsection {
+    margin-top: 0;
+    grid-template-columns: 1fr; /* one column on small screens */
+    width: 95%;
+    gap: 1rem;
+    justify-items: stretch;
+  }
+
+  .postCard {
+    width: 100%; /* Full width for best mobile experience */
+    max-width: none;
+  }
+
+  .postCard h4 {
+    font-size: 18px;
+  }
+
+  .postCard span {
+    font-size: 14px;
+  }
+
+  .pagination {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .pagination button {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+}

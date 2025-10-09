@@ -1,0 +1,57 @@
+:root{
+    --max-width: 1200px;
+    --gap: 1rem;
+    --color-primary: #365037;
+    --color-accent: #985C43;
+    --muted: #a48f8f;
+    --bg: #ffffff;
+    --text: #333;
+    /* layout helpers */
+    --navbar-height: 64px;
+    --intro-offset: 1.25rem;
+    --intro-card-max: 220px;
+    --intro-card-sm: 130px;
+}
+
+/* Reset */
+*{box-sizing: border-box;margin:0;padding:0}
+html,body,#root{height:100%;}
+body{font-family: 'Roboto Condensed', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased}
+
+/* Prevent horizontal overflow but allow elements to size naturally */
+body{overflow-x:hidden}
+
+/* Fluid container */
+.container{
+    width: min(100%, var(--max-width));
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Fluid type utility */
+h1{font-size: clamp(1.4rem, 2.2vw + 1rem, 2.5rem)}
+h2{font-size: clamp(1.2rem, 1.6vw + 0.8rem, 2rem)}
+p,li,span,label{font-size: clamp(.9rem, .8vw + .8rem, 1.05rem)}
+
+/* Helpers */
+.row{display:flex;gap:var(--gap);flex-wrap:wrap}
+.col{flex:1;min-width:0}
+.center{display:flex;align-items:center;justify-content:center}
+.stack{display:flex;flex-direction:column;gap:var(--gap)}
+
+/* Main layout helpers */
+.app-root{min-height:100vh;display:flex;flex-direction:column}
+.main-content{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
+
+/* Responsive images */
+img{max-width:100%;height:auto;display:block}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.5rem 1rem;border-radius:6px;border:none;cursor:pointer}
+
+/* Small breakpoint helpers */
+@media (max-width:768px){
+    .container{padding:0 .75rem}
+}
+
+/* keep app-level overrides for legacy classes, but avoid forcing width:100% on everything */
