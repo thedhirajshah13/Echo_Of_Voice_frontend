@@ -7,6 +7,7 @@ export const useBlogContentContex=()=>{
 
 export const BlogContentProvider=({children})=>{
     const [blogContent, setBlogContent]=useState([])
+    
     const [fullBlog, setfullBlog]=useState();
     return (
         <blogContentContext.Provider value={{blogContent,setBlogContent,fullBlog,setfullBlog}}>{children}</blogContentContext.Provider>

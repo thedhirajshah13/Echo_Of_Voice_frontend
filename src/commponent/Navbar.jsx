@@ -64,7 +64,7 @@ const Navbar = () => {
           <Link to="/">{<HomeIcon />}Home</Link>
           <Link to="/about"><InfoIcon/>About</Link>
           <Link to="/contact">{<ContactMailIcon/>}Contact</Link>
-          <Link to='/createpost'>{<CreateIcon/>}Share</Link>
+          <Link to='/createpost'>{<CreateIcon/>} Compose</Link>
         </div>
         <button
           ref={hamburgerRef}
