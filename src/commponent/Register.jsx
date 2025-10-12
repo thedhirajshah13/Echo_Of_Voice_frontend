@@ -23,7 +23,7 @@ const Register = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const url = "http://localhost:8000/register";
+      const url = `${process.env.REACT_APP_API_URL}/register`;
       const response = await axios.post(url, input, {
         method: "POST",
         headers: {

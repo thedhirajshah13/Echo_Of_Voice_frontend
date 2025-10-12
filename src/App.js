@@ -13,6 +13,7 @@ import "./app.css";
 
 function App() {
   const { auth } = useAuthContext();
+  console.log(process.env.REACT_APP_API_URL)
 
   return (
     <BrowserRouter>

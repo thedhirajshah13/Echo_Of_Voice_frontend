@@ -23,7 +23,7 @@ export const SocketContextProvider = ({ children }) => {
             }
 
             // Create new socket connection
-            const newSocket = io("http://localhost:8000", {
+            const newSocket = io(`${process.env.REACT_APP_API_URL}`, {
                 query: {
                     userId: auth.id,
                 },

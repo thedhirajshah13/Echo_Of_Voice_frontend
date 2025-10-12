@@ -41,7 +41,7 @@ const Blog = () => {
 
         try {
           const response = await axios.post(
-            "http://localhost:8000/file/upload",
+            `${process.env.REACT_APP_API_URL}/file/upload`,
             formdata,
             {
               headers: {
@@ -70,7 +70,7 @@ const Blog = () => {
   async function handlePublish(e) {
     e.preventDefault();
     const responseData = await axios.post(
-      "http://localhost:8000/blogpost",
+      `${process.env.REACT_APP_API_URL}/blogpost`,
       post,
       {
         method: "POST",

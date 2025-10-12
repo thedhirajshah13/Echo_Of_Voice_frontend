@@ -33,7 +33,7 @@ const BlogSection = () => {
   useEffect(() => {
     const getpost = async () => {
       const response = await axios.get(
-        `http://localhost:8000/post?page=${currentPage}&limit=${limit}`,
+        `${process.env.REACT_APP_API_URL}/post?page=${currentPage}&limit=${limit}`,
         {
           withCredentials: true,
         }

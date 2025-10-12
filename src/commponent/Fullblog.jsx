@@ -8,101 +8,103 @@ import "./fullblog.css";
 import useListenCommentAndLike from "../socketHooks";
 import { useSocketContext } from "../Context/socketContext";
 
+
 const Fullblog = () => {
   const { socket } = useSocketContext();
   const [fullBlog, setfullBlog] = useState();
-  const [comment, setComment] = useState();
+  const [comment, setComment] = useState("");
   const { auth } = useAuthContext();
-  console.log(auth.id);
 
   const { id } = useParams();
   useListenCommentAndLike(setfullBlog);
   const [showAllComments, setShowAllComments] = useState(false);
   const [showFullArticle, setShowFullArticle] = useState(false);
-  useEffect(() => {
-    const fullBlog = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/fullblog/${id}`
-        );
-        if (response.status === 200) {
-        }
 
+  useEffect(() => {
+    const fetchFullBlog = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/fullblog/${id}`,{withCredentials: true});
         setfullBlog(response.data.fullBlog);
       } catch (error) {
-        console.log(`full Blog Page Error -> ${error}`);
+        console.log(`Full Blog Page Error -> ${error}`);
       }
     };
-    fullBlog();
+    fetchFullBlog();
   }, [id]);
 
   const handleComment = (e) => {
     setComment(e.target.value);
-    
   };
+
   const handleCommentSubmit = async () => {
     try {
-      const url = "http://localhost:8000/fullblog/comments";
+      const url = `${process.env.REACT_APP_API_URL}/fullblog/comments`;
       const commentData = {
         message: comment,
         blog: id,
       };
 
-      const response = await axios.post(url, commentData, {
-        method: "POST",
+      await axios.post(url, commentData, {
         withCredentials: true,
-
         headers: {
-          content: "application/json",
+          "Content-Type": "application/json",
         },
       });
-      console.log(response);
+
       socket.emit("newComment", { message: comment, blog: id, user: auth });
       setComment("");
     } catch (error) {
-      console.log(`Comment Error-> ${error}`);
+      console.log(`Comment Error -> ${error}`);
     }
   };
+
   const handleLikeSubmit = async () => {
     try {
-      const url = "http://localhost:8000/fullblog/like";
-      const response = await axios.post(
+      const url = `${process.env.REACT_APP_API_URL}/fullblog/like`;
+      await axios.post(
         url,
         { blog: id },
         {
-          method: "post",
           withCredentials: true,
           headers: {
-            content: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
-      const result = response.data;
+
       socket.emit("newLike", { blog: id, user: auth.id });
-      console.log(result);
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log(fullBlog);
-  const likesArray = Array.isArray(fullBlog?.like) ? fullBlog.like : ""; 
+  const likesArray = Array.isArray(fullBlog?.like) ? fullBlog.like : [];
 
   return (
     <div className="fullblog">
       {fullBlog ? (
         <div className="fullblog-container">
           <div className="fullblog-hero">
-            <img src={fullBlog.image} alt="Blog Picture" className="fullblog-img" />
+            <img
+              src={fullBlog.image}
+              alt="Blog Picture"
+              className="fullblog-img"
+            />
           </div>
+
           <div className="fullblog-meta">
-            <Link to="/" className="back-link">← Back to posts</Link>
+            <Link to="/" className="back-link">
+              ← Back to posts
+            </Link>
             <h2 className="fullblog-title">{fullBlog.title}</h2>
             <p className="fullblog-categories">{fullBlog.catergories}</p>
           </div>
+
           <div className="fullblog-body">
             <p className="fullblog-text">
-              {fullBlog.blog && fullBlog.blog.length > 800 && !showFullArticle
+              {fullBlog.blog &&
+              fullBlog.blog.length > 800 &&
+              !showFullArticle
                 ? `${fullBlog.blog.slice(0, 800).trim()}...`
                 : fullBlog.blog}
             </p>
@@ -116,9 +118,8 @@ const Fullblog = () => {
               </button>
             )}
           </div>
-          {auth.id === fullBlog.user._id ? (
-            ""
-          ) : (
+
+          {auth.id !== fullBlog.user._id && (
             <>
               <div className="blog-author">
                 <p className="author-name">
@@ -128,6 +129,7 @@ const Fullblog = () => {
                   Email: <span>{fullBlog.user.email}</span>
                 </p>
               </div>
+
               <div className="blog-interaction">
                 <span
                   style={
@@ -136,7 +138,7 @@ const Fullblog = () => {
                       : {}
                   }
                 >
-                  {likesArray.length} 
+                  {likesArray.length}{" "}
                   <ThumbUpAltIcon
                     onClick={handleLikeSubmit}
                     style={{
@@ -151,7 +153,6 @@ const Fullblog = () => {
                         ? "blue"
                         : "gray",
                     }}
-                    
                     disabled={likesArray.some(
                       (like) => like.user?._id === auth?.id
                     )}
@@ -164,21 +165,45 @@ const Fullblog = () => {
                   onChange={handleComment}
                   value={comment}
                 />
-                <button onClick={handleCommentSubmit}>{<SendIcon />}</button>
+                <button onClick={handleCommentSubmit}>
+                  <SendIcon />
+                </button>
               </div>
             </>
           )}
+
           <div className="comment">
             <h3>{fullBlog.comments.length} Comments</h3>
-            {fullBlog.comments.length > 0 ? (
+            {fullBlog.comments.length > 0 && (
               <div className="comment-section">
-                {(
-                  // decide which comments to show
-                  showAllComments ? fullBlog.comments : fullBlog.comments.slice(0, 3)
+                {(showAllComments
+                  ? fullBlog.comments
+                  : fullBlog.comments.slice(0, 3)
                 ).map((comm, idx) => (
-                  <div className="comment-card" key={comm._id || idx}>
-                    <p>{comm.message}</p>
-                    <h4>{comm.user?.name || 'Anonymous'}</h4>
+                  <div
+                    className="comment-card"
+                    key={comm._id || idx}
+                    style={{
+                      backgroundColor: comm.isFlagged
+                        ? "#ffe6e6"
+                        : "#e6f7ff",
+                      borderLeft: comm.isFlagged
+                        ? "4px solid red"
+                        : "4px solid blue",
+                      padding: "10px",
+                      marginBottom: "10px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <p>
+                      {comm.message}{" "}
+                      {comm.isFlagged && (
+                        <span style={{ color: "red", fontWeight: "bold" }}>
+                          ⚠️ This comment may be inappropriate
+                        </span>
+                      )}
+                    </p>
+                    <h4>{comm.user?.name || "Anonymous"}</h4>
                   </div>
                 ))}
 
@@ -188,12 +213,12 @@ const Fullblog = () => {
                     onClick={() => setShowAllComments((s) => !s)}
                     aria-expanded={showAllComments}
                   >
-                    {showAllComments ? "Show less" : `Show more (${fullBlog.comments.length - 3})`}
+                    {showAllComments
+                      ? "Show less"
+                      : `Show more (${fullBlog.comments.length - 3})`}
                   </button>
                 )}
               </div>
-            ) : (
-              ""
             )}
           </div>
         </div>

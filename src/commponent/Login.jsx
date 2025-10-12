@@ -25,7 +25,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const url = "http://localhost:8000/login";
+      const url = `${process.env.REACT_APP_API_URL}/login`;
       const response = await axios.post(url, JSON.stringify(login), {
         method: "POST",
         headers: {

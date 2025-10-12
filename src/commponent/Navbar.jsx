@@ -43,7 +43,7 @@ const Navbar = () => {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
   function logout() {
-    const url = "http://localhost:8000/logout";
+    const url = `${process.env.REACT_APP_API_URL}/logout`;
     const response = axios.post(url, {
       withCredentials: true,
     });
