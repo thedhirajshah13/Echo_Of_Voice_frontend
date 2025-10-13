@@ -1,25 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./blog.css";
 import PhotoCameraBackOutlinedIcon from "@mui/icons-material/PhotoCameraBackOutlined";
-
+import CircularProgress from "@mui/material/CircularProgress"; // ✅ Spinner
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
-
 const Blog = () => {
-  let postData = {
+  const postData = {
     image: "",
     title: "",
     blog: "",
     catergories: "",
-
     date: new Date(),
   };
 
   const [imgfile, setimgfile] = useState("");
   const [post, setpost] = useState(postData);
   const [blogimg, setblogimg] = useState("");
+  const [loading, setLoading] = useState(false); // ✅ Spinner state
   const navigate = useNavigate();
 
   function handlechange(e) {
@@ -38,6 +36,7 @@ const Blog = () => {
       if (imgfile) {
         const formdata = new FormData();
         formdata.append("file", imgfile);
+        setLoading(true); // ✅ Start loader
 
         try {
           const response = await axios.post(
@@ -50,16 +49,18 @@ const Blog = () => {
             }
           );
 
-          // Assuming the response contains the image URL.
           console.log(response.data);
-          const imageUrl = response.data; // Adjust this based on your API response
+          const imageUrl = response.data.url; // ✅ Corrected response usage
           setblogimg(imageUrl);
           setpost((prevState) => ({
             ...prevState,
-            image: imageUrl, // Update the post state with the image URL
+            image: imageUrl,
           }));
         } catch (error) {
           console.error("Image upload failed:", error);
+          alert("Image upload failed. Please try again.");
+        } finally {
+          setLoading(false); // ✅ Stop loader
         }
       }
     }
@@ -69,36 +70,52 @@ const Blog = () => {
 
   async function handlePublish(e) {
     e.preventDefault();
-    const responseData = await axios.post(
-      `${process.env.REACT_APP_API_URL}/blogpost`,
-      post,
-      {
-        method: "POST",
-
-        withCredentials: true,
+    try {
+      const responseData = await axios.post(
+        `${process.env.REACT_APP_API_URL}/blogpost`,
+        post,
+        { withCredentials: true }
+      );
+      if (responseData.status === 200) {
+        navigate("/");
       }
-    );
-    if (responseData.status === 200) {
-      navigate("/");
+    } catch (error) {
+      console.error("Error publishing blog:", error);
     }
   }
 
   return (
     <>
       <div className="blog">
-        <img src={url} alt="url" />
-        <form action="/postblog" method="POST" onSubmit={handlePublish}>
+        <div className="image-container" style={{ position: "relative" }}>
+          <img src={url} alt="url" className="blog-preview" />
+          {loading && (
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "rgba(0,0,0,0.4)",
+                borderRadius: "10px",
+                padding: "10px",
+              }}
+            >
+              <CircularProgress color="inherit" />
+            </div>
+          )}
+        </div>
+
+        <form onSubmit={handlePublish}>
           <div className="first-part">
-            <label htmlFor="upload">
+            <label htmlFor="upload" style={{ cursor: "pointer" }}>
               <PhotoCameraBackOutlinedIcon />
             </label>
             <input
               type="file"
               id="upload"
               style={{ display: "none" }}
-              onChange={(e) => {
-                setimgfile(e.target.files[0]);
-              }}
+              onChange={(e) => setimgfile(e.target.files[0])}
             />
             <input
               type="text"
@@ -108,11 +125,13 @@ const Blog = () => {
             />
             <input
               type="text"
-              placeholder="Add Catergory.."
+              placeholder="Add Category.."
               name="catergories"
               onChange={handlechange}
             />
-            <button type="submit">Publish</button>
+            <button type="submit" disabled={loading}>
+              {loading ? "Uploading..." : "Publish"}
+            </button>
           </div>
 
           <textarea
