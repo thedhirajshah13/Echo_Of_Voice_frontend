@@ -3,52 +3,52 @@ import { useParams, Link } from "react-router-dom";
 import { useAuthContext } from "../Context/authContext";
 import SendIcon from "@mui/icons-material/Send";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import CircularProgress from "@mui/material/CircularProgress"; // ✅ Spinner
 import axios from "axios";
 import "./fullblog.css";
 import useListenCommentAndLike from "../socketHooks";
 import { useSocketContext } from "../Context/socketContext";
 
-
 const Fullblog = () => {
   const { socket } = useSocketContext();
-  const [fullBlog, setfullBlog] = useState();
+  const [fullBlog, setfullBlog] = useState(null);
   const [comment, setComment] = useState("");
   const { auth } = useAuthContext();
-
+  const [loading, setLoading] = useState(true); // ✅ spinner state
   const { id } = useParams();
   useListenCommentAndLike(setfullBlog);
   const [showAllComments, setShowAllComments] = useState(false);
   const [showFullArticle, setShowFullArticle] = useState(false);
 
+  // ✅ Fetch Blog Data
   useEffect(() => {
     const fetchFullBlog = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/fullblog/${id}`,{withCredentials: true});
+        setLoading(true);
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/fullblog/${id}`,
+          { withCredentials: true }
+        );
         setfullBlog(response.data.fullBlog);
       } catch (error) {
         console.log(`Full Blog Page Error -> ${error}`);
+      } finally {
+        setLoading(false);
       }
     };
     fetchFullBlog();
   }, [id]);
 
-  const handleComment = (e) => {
-    setComment(e.target.value);
-  };
+  const handleComment = (e) => setComment(e.target.value);
 
   const handleCommentSubmit = async () => {
     try {
       const url = `${process.env.REACT_APP_API_URL}/fullblog/comments`;
-      const commentData = {
-        message: comment,
-        blog: id,
-      };
+      const commentData = { message: comment, blog: id };
 
       await axios.post(url, commentData, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       socket.emit("newComment", { message: comment, blog: id, user: auth });
@@ -66,12 +66,9 @@ const Fullblog = () => {
         { blog: id },
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
-
       socket.emit("newLike", { blog: id, user: auth.id });
     } catch (error) {
       console.log(error);
@@ -82,7 +79,19 @@ const Fullblog = () => {
 
   return (
     <div className="fullblog">
-      {fullBlog ? (
+      {loading ? (
+        // ✅ Spinner overlay while loading
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "80vh",
+          }}
+        >
+          <CircularProgress size={60} thickness={5} />
+        </div>
+      ) : fullBlog ? (
         <div className="fullblog-container">
           <div className="fullblog-hero">
             <img
@@ -153,9 +162,6 @@ const Fullblog = () => {
                         ? "blue"
                         : "gray",
                     }}
-                    disabled={likesArray.some(
-                      (like) => like.user?._id === auth?.id
-                    )}
                   />
                 </span>
 
@@ -223,7 +229,9 @@ const Fullblog = () => {
           </div>
         </div>
       ) : (
-        <p>There is some error</p>
+        <p style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+          Something went wrong. Please try again.
+        </p>
       )}
     </div>
   );
