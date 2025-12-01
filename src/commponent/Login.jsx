@@ -17,6 +17,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, seterror] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fieldError, setFieldError] = useState("");
 
   const Naviagte = useNavigate();
   function handleChange(e) {
@@ -24,6 +25,18 @@ const Login = () => {
   }
   async function handleSubmit(e) {
     e.preventDefault();
+    // client-side validation
+    if (!login.email || !login.password) {
+      setFieldError('Email and password are required.');
+      return;
+    }
+    // basic email pattern check
+    const emailPattern = /\S+@\S+\.\S+/;
+    if (!emailPattern.test(login.email)) {
+      setFieldError('Please enter a valid email address.');
+      return;
+    }
+    setFieldError("");
     setLoading(true);
     try {
       const url = `${process.env.REACT_APP_API_URL}/login`;
@@ -34,14 +47,20 @@ const Login = () => {
         },
         withCredentials: true,
       });
-      console.log(response);
+      // handle non-2xx responses gracefully
+      if (!response || response.status !== 200) {
+        const msg = response?.data?.message || 'Login failed. Please check your credentials.';
+        seterror(msg);
+        return;
+      }
       const result = response.data;
-
       localStorage.setItem("blog-user", JSON.stringify(result));
       setAuth(result);
       Naviagte("/");
     } catch (error) {
       console.log(`client->login Error ${error}`);
+      const msg = error?.response?.data?.message || 'Network error. Please try again.';
+      seterror(msg);
     }
     finally {
       setLoading(false);
@@ -51,6 +70,7 @@ const Login = () => {
   return (
     <div className="auth-page">
       <div className="login auth-card">
+        {loading && <div className="auth-overlay" aria-hidden="true"><span className="spinner large"></span></div>}
         <img src={logo} alt="Echo Of Voice logo" className="auth-logo" />
         <div className="app-name">blogApplication</div>
       <form action="/" method="POST" onSubmit={handleSubmit}>
@@ -85,6 +105,8 @@ const Login = () => {
           {loading ? <span className="spinner" aria-hidden="true"></span> : 'Login'}
         </button>
       </form>
+      {fieldError && <div className="auth-error" role="alert">{fieldError}</div>}
+      {error && <div className="auth-error" role="alert">{error}</div>}
 
       <div>
         <p>New User?</p>

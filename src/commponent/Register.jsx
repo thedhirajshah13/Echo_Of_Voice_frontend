@@ -15,6 +15,9 @@ const Register = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const Navigate = useNavigate();
   function handleChange(e) {
     setinput({ ...input, [e.target.name]: e.target.value });
@@ -22,6 +25,19 @@ const Register = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    // client-side validation
+    if (!input.name || !input.email || !input.password) {
+      setError('Name, email and password are required.');
+      return;
+    }
+    const emailPattern = /\S+@\S+\.\S+/;
+    if (!emailPattern.test(input.email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    setError("");
+    setSuccess("");
+    setLoading(true);
     try {
       const url = `${process.env.REACT_APP_API_URL}/register`;
       const response = await axios.post(url, input, {
@@ -32,23 +48,32 @@ const Register = () => {
         withCredentials: true,
       });
 
-      const result = response;
-      console.log(result);
-      if (result.status === 201) {
+      if (response && response.status === 201) {
+        setSuccess('Account created successfully. Redirecting to login...');
+        // Save user and redirect after short delay
         setTimeout(() => {
-          localStorage.setItem("blog-user", JSON.stringify(result.data));
-          setAuth(result);
+          localStorage.setItem("blog-user", JSON.stringify(response.data));
+          setAuth(response.data);
           setinput("");
           Navigate("/login");
-        }, 1000);
+        }, 1200);
+      } else {
+        const msg = response?.data?.message || 'Registration failed. Please try again.';
+        setError(msg);
       }
     } catch (error) {
       console.log(`register issue ${error}`);
+      const msg = error?.response?.data?.message || 'Network error. Please try again.';
+      setError(msg);
+    }
+    finally {
+      setLoading(false);
     }
   }
   return (
     <div className="auth-page">
       <div className="login auth-card">
+        {loading && <div className="auth-overlay" aria-hidden="true"><span className="spinner large"></span></div>}
         <img src={logo} alt="Echo Of Voice logo" className="auth-logo" />
         <div className="app-name">blogApplication</div>
       <form action="/register" method="post" onSubmit={handleSubmit}>
@@ -86,10 +111,13 @@ const Register = () => {
         </div>
 
         <br />
-        <button type="submit" className="login-btn btn">
-          Sign-Up
+        <button type="submit" className="login-btn btn" disabled={loading}>
+          {loading ? <span className="spinner" aria-hidden="true"></span> : 'Sign-Up'}
         </button>
       </form>
+
+      {error && <div className="auth-error" role="alert">{error}</div>}
+      {success && <div className="auth-success" role="status">{success}</div>}
 
       <div>
         <p>Already have account?</p>
