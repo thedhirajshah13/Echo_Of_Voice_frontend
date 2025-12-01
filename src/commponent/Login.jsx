@@ -48,7 +48,7 @@ const Login = () => {
         withCredentials: true,
       });
       // handle non-2xx responses gracefully
-      if (!response || response.status !== 200) {
+      if (!response || response.status !== 201) {
         const msg = response?.data?.message || 'Login failed. Please check your credentials.';
         seterror(msg);
         return;
