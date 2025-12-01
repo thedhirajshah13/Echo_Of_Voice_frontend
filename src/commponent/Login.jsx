@@ -49,7 +49,7 @@ const Login = () => {
       });
       // handle non-2xx responses gracefully
       if (!response || response.status !== 201) {
-        const msg = response?.data?.message || 'Login failed. Please check your credentials.';
+        const msg = response?.data?.msg || 'Login failed. Please check your credentials.';
         seterror(msg);
         return;
       }
@@ -59,7 +59,7 @@ const Login = () => {
       Naviagte("/");
     } catch (error) {
       console.log(`client->login Error ${error}`);
-      const msg = error?.response?.data?.message || 'Network error. Please try again.';
+      const msg = error?.response?.data?.msg || 'Network error. Please try again.';
       seterror(msg);
     }
     finally {
