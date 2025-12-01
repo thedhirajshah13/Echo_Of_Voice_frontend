@@ -16,6 +16,7 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, seterror] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const Naviagte = useNavigate();
   function handleChange(e) {
@@ -23,7 +24,7 @@ const Login = () => {
   }
   async function handleSubmit(e) {
     e.preventDefault();
-
+    setLoading(true);
     try {
       const url = `${process.env.REACT_APP_API_URL}/login`;
       const response = await axios.post(url, JSON.stringify(login), {
@@ -41,6 +42,9 @@ const Login = () => {
       Naviagte("/");
     } catch (error) {
       console.log(`client->login Error ${error}`);
+    }
+    finally {
+      setLoading(false);
     }
   }
 
@@ -77,8 +81,8 @@ const Login = () => {
           </button>
         </div>
         <br />
-        <button type="submit" className="login-btn btn">
-          Login
+        <button type="submit" className="login-btn btn" disabled={loading}>
+          {loading ? <span className="spinner" aria-hidden="true"></span> : 'Login'}
         </button>
       </form>
 
