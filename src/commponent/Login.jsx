@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, {useState } from "react";
 import logo from "../asset/Icon.webp";
 import "./login.css";
 import { Button } from "@mui/material";
@@ -54,8 +54,10 @@ const Login = () => {
         return;
       }
       const result = response.data;
+      console.log("Login successful:", result);
       localStorage.setItem("blog-user", JSON.stringify(result));
-      setAuth(result);
+      setAuth(result.success);
+      console.log("Auth set in context"+result);
       Naviagte("/");
     } catch (error) {
       console.log(`client->login Error ${error}`);

@@ -8,30 +8,30 @@ import Login from "./commponent/Login";
 import Register from "./commponent/Register";
 import Main from "./Pages/Main";
 import Fullblog from "./commponent/Fullblog";
-import Blog from "./commponent/Blog"
+
 import "./app.css";
 
 function App() {
   const { auth } = useAuthContext();
-  console.log(process.env.REACT_APP_API_URL)
+  console.log("auth check" + auth);
+  console.log(process.env.REACT_APP_API_URL);
 
   return (
     <BrowserRouter>
       <AuthContextProvider>
         <BlogContentProvider>
-        <SocketContextProvider>
-          <Routes>
-            <Route path="/" element={<PrivateRoute />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="/fullblog/:id" element={<Fullblog />} />
-            {/* <Route path="createblog" element={<Blog/>}/> */}
-            <Route
-              path="createpost"
-              element={auth ? <BlogPost /> : <Navigate to="/login" />}
-            />
-            
-          </Routes>
+          <SocketContextProvider>
+            <Routes>
+              <Route path="/" element={<PrivateRoute />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="/fullblog/:id" element={<Fullblog />} />
+              {/* <Route path="createblog" element={<Blog/>}/> */}
+              <Route
+                path="createpost"
+                element={auth ? <BlogPost /> : <Navigate to="/login" />}
+              />
+            </Routes>
           </SocketContextProvider>
         </BlogContentProvider>
       </AuthContextProvider>
