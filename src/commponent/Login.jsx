@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import { useState } from "react";
 import logo from "../asset/Icon.webp";
 import "./login.css";
 import { Button } from "@mui/material";
@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../Context/authContext";
 
 const Login = () => {
-  const { setAuth } = useAuthContext();
+  const { setAuth, auth } = useAuthContext();
   const [login, setlogin] = useState({
     email: "",
     password: "",
@@ -27,13 +27,13 @@ const Login = () => {
     e.preventDefault();
     // client-side validation
     if (!login.email || !login.password) {
-      setFieldError('Email and password are required.');
+      setFieldError("Email and password are required.");
       return;
     }
     // basic email pattern check
     const emailPattern = /\S+@\S+\.\S+/;
     if (!emailPattern.test(login.email)) {
-      setFieldError('Please enter a valid email address.');
+      setFieldError("Please enter a valid email address.");
       return;
     }
     setFieldError("");
@@ -49,22 +49,24 @@ const Login = () => {
       });
       // handle non-2xx responses gracefully
       if (!response || response.status !== 201) {
-        const msg = response?.data?.msg || 'Login failed. Please check your credentials.';
+        const msg =
+          response?.data?.msg || "Login failed. Please check your credentials.";
         seterror(msg);
         return;
       }
       const result = response.data;
-      console.log("Login successful:", result);
+      // console.log("Login successful:", result);
       localStorage.setItem("blog-user", JSON.stringify(result));
-      setAuth(result.success);
-      console.log("Auth set in context"+result);
+      setAuth(result);
+      console.log(auth)
+      // console.log("Auth set in context" + result);
       Naviagte("/");
     } catch (error) {
       console.log(`client->login Error ${error}`);
-      const msg = error?.response?.data?.msg || 'Network error. Please try again.';
+      const msg =
+        error?.response?.data?.msg || "Network error. Please try again.";
       seterror(msg);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   }
@@ -72,50 +74,66 @@ const Login = () => {
   return (
     <div className="auth-page">
       <div className="login auth-card">
-        {loading && <div className="auth-overlay" aria-hidden="true"><span className="spinner large"></span></div>}
+        {loading && (
+          <div className="auth-overlay" aria-hidden="true">
+            <span className="spinner large"></span>
+          </div>
+        )}
         <img src={logo} alt="Echo Of Voice logo" className="auth-logo" />
         <div className="app-name">blogApplication</div>
-      <form action="/" method="POST" onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          value={login.email}
-          onChange={handleChange}
-          required
-          placeholder="Enter your Email-Id...."
-        />
-        <div style={{ position: "relative" }}>
+        <form action="/" method="POST" onSubmit={handleSubmit}>
           <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            value={login.password}
+            type="email"
+            name="email"
+            value={login.email}
             onChange={handleChange}
             required
-            placeholder="Password..."
+            placeholder="Enter your Email-Id...."
           />
-          <button
-            type="button"
-            className="pwd-toggle"
-            onClick={() => setShowPassword((s) => !s)}
-            aria-label={showPassword ? "Hide password" : "Show password"}
-          >
-            {showPassword ? "Hide" : "Show"}
+          <div style={{ position: "relative" }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={login.password}
+              onChange={handleChange}
+              required
+              placeholder="Password..."
+            />
+            <button
+              type="button"
+              className="pwd-toggle"
+              onClick={() => setShowPassword((s) => !s)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+          <br />
+          <button type="submit" className="login-btn btn" disabled={loading}>
+            {loading ? (
+              <span className="spinner" aria-hidden="true"></span>
+            ) : (
+              "Login"
+            )}
           </button>
-        </div>
-        <br />
-        <button type="submit" className="login-btn btn" disabled={loading}>
-          {loading ? <span className="spinner" aria-hidden="true"></span> : 'Login'}
-        </button>
-      </form>
-      {fieldError && <div className="auth-error" role="alert">{fieldError}</div>}
-      {error && <div className="auth-error" role="alert">{error}</div>}
+        </form>
+        {fieldError && (
+          <div className="auth-error" role="alert">
+            {fieldError}
+          </div>
+        )}
+        {error && (
+          <div className="auth-error" role="alert">
+            {error}
+          </div>
+        )}
 
-      <div>
-        <p>New User?</p>
-        <Link to="/register">
-          <Button variant="outlined">Create new Account</Button>
-        </Link>
-      </div>
+        <div>
+          <p>New User?</p>
+          <Link to="/register">
+            <Button variant="outlined">Create new Account</Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

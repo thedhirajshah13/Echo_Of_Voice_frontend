@@ -13,12 +13,13 @@ import "./app.css";
 
 function App() {
   const { auth } = useAuthContext();
-  console.log("auth check" + auth);
+  // const {success}=auth
+  console.log( auth);
   console.log(process.env.REACT_APP_API_URL);
 
   return (
     <BrowserRouter>
-      <AuthContextProvider>
+      
         <BlogContentProvider>
           <SocketContextProvider>
             <Routes>
@@ -29,12 +30,12 @@ function App() {
               {/* <Route path="createblog" element={<Blog/>}/> */}
               <Route
                 path="createpost"
-                element={auth ? <BlogPost /> : <Navigate to="/login" />}
+                element={auth.success ? <BlogPost /> : <Navigate to="/login" />}
               />
             </Routes>
           </SocketContextProvider>
         </BlogContentProvider>
-      </AuthContextProvider>
+     
     </BrowserRouter>
   );
 }
