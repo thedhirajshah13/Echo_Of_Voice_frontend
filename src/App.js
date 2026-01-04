@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import BlogPost from "./Pages/BlogPost";
-import { AuthContextProvider, useAuthContext } from "./Context/authContext";
+import { useAuthContext } from "./Context/authContext";
 import { BlogContentProvider } from "./Context/blogContentContext";
 import { SocketContextProvider } from "./Context/socketContext";
 
@@ -12,36 +12,43 @@ import Fullblog from "./commponent/Fullblog";
 import "./app.css";
 
 function App() {
-  const { auth } = useAuthContext();
+  const { auth, loading } = useAuthContext();
   // const {success}=auth
-  console.log( auth);
-  console.log(process.env.REACT_APP_API_URL);
+  console.log(auth);
+  // console.log(process.env.REACT_APP_API_URL);
 
   return (
     <BrowserRouter>
-      
-        <BlogContentProvider>
-          <SocketContextProvider>
-            <Routes>
-              <Route path="/" element={<PrivateRoute />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              <Route path="/fullblog/:id" element={<Fullblog />} />
-              {/* <Route path="createblog" element={<Blog/>}/> */}
-              <Route
-                path="createpost"
-                element={auth.success ? <BlogPost /> : <Navigate to="/login" />}
-              />
-            </Routes>
-          </SocketContextProvider>
-        </BlogContentProvider>
-     
+      <BlogContentProvider>
+        <SocketContextProvider>
+          <Routes>
+            <Route path="/" element={<PrivateRoute />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="/fullblog/:id" element={<Fullblog />} />
+            {/* <Route path="createblog" element={<Blog/>}/> */}
+            
+            <Route
+              path="createpost"
+              element={
+                loading ? null : auth ? ( // or loader
+                  <BlogPost />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+          </Routes>
+        </SocketContextProvider>
+      </BlogContentProvider>
     </BrowserRouter>
   );
 }
 
 const PrivateRoute = () => {
-  const { auth } = useAuthContext();
+  const { auth, loading } = useAuthContext();
+
+  if (loading) return null; // or loader
 
   return auth ? <Main /> : <Navigate to="/login" />;
 };
