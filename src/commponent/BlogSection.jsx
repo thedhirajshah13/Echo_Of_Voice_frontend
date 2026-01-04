@@ -7,6 +7,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 import ModeCommentOutlinedIcon from "@mui/icons-material/ModeCommentOutlined";
+import SkeletonLoader from "./SkeletonLoader";
 import style from "../asset/BlogImage/style.jpeg";
 import shop from "../asset/BlogImage/shop.jpeg";
 import sports from "../asset/BlogImage/sports.jpeg";
@@ -16,6 +17,7 @@ import travel from "../asset/BlogImage/travel.jpeg";
 const BlogSection = () => {
   
   const [post, setpost] = useState([]);
+  const [loading, setLoading] = useState(true);
   const {setBlogContent} =useBlogContentContex();
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,19 +34,27 @@ const BlogSection = () => {
 
   useEffect(() => {
     const getpost = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/post?page=${currentPage}&limit=${limit}`,
-        {
-          withCredentials: true,
-        }
-      );
-      const { posts, totalPages, currentpage } = response.data;
-      console.log(posts);
-      setCurrentPage(currentpage);
-      setTotalPage(totalPages);
+      setLoading(true);
+      setpost([]);
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/post?page=${currentPage}&limit=${limit}`,
+          {
+            withCredentials: true,
+          }
+        );
+        const { posts, totalPages, currentpage } = response.data;
+        console.log(posts);
+        setCurrentPage(currentpage);
+        setTotalPage(totalPages);
 
-      setpost(posts);
-      setBlogContent(posts)
+        setpost(posts);
+        setBlogContent(posts)
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     getpost();
   }, [currentPage]);
@@ -57,7 +67,9 @@ const BlogSection = () => {
 
   return (
     <div className="blogsection">
-      {post.length > 0 ? (
+      {loading ? (
+        <SkeletonLoader count={limit} />
+      ) : post.length > 0 ? (
         post.map((post, index) => (
           <div className="postCard" key={index}>
             <img
@@ -82,7 +94,7 @@ const BlogSection = () => {
           </div>
         ))
       ) : (
-        <p>hello</p>
+        <p>No posts available</p>
       )}
       <div className="pagination">
         <button onClick={handlePrevPage} disabled={currentPage === 1}>
