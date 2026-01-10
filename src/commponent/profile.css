@@ -1,0 +1,258 @@
+/* Profile component styles */
+* {
+  box-sizing: border-box;
+}
+
+.profile {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #1a1a1a;
+}
+
+/* Profile Header Section */
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 30px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.profile-header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  z-index: 1;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 4px solid white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.user-basic {
+  color: white;
+}
+
+.user-name {
+  margin: 0 0 6px 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.user-email {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+.edit-btn {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+.edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Content Area */
+.profile-main {
+  display: block;
+}
+
+/* Right Content Area */
+.profile-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title {
+  margin: 0 0 24px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #667eea;
+  display: inline-block;
+}
+
+.posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  min-height: 300px;
+}
+
+/* Empty State */
+.empty-post {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 40px;
+  border: 2px dashed #cbd5e0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.empty-post:hover {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8f1ff 100%);
+}
+
+.empty-title {
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: 18px;
+  color: #2d3748;
+}
+
+.empty-action {
+  margin: 0 0 24px 0;
+  color: #718096;
+  font-size: 14px;
+}
+
+.write-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  display: inline-block;
+}
+
+.write-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Blog Post Cards */
+.post-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+}
+
+.post-card:hover {
+  transform: translateY(-6px);
+  border-color: #667eea;
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15);
+}
+
+.post-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.post-title {
+  margin: 0;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.5;
+  display: -webkit-box;
+  /* -webkit-line-clamp: 2; */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .profile-header-left {
+    justify-content: center;
+  }
+
+  .posts {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .profile {
+    margin: 20px auto;
+  }
+
+  .profile-header {
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .user-name {
+    font-size: 22px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .posts {
+    grid-template-columns: 1fr;
+  }
+
+  .empty-post {
+    padding: 40px 24px;
+  }
+}
