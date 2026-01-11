@@ -4,10 +4,15 @@ import profileImage from "../asset/profileImage.avif";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [userData, setUserData] = useState([]);
   const [userBlogs, setUserBlogs] = useState([]);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: "", profilePhoto: null });
+  const [previewPhoto, setPreviewPhoto] = useState(profileImage);
+  const navigate = useNavigate();
   //   const { auth } = useAuthContext();
   const url = process.env.REACT_APP_API_URL;
   // getting usetDeatils
@@ -36,6 +41,40 @@ const Profile = () => {
   useEffect(() => {
     getLoggedInUserDetailsAndHisBlogs();
   }, []);
+
+  const openEditModal = () => {
+    setFormData({ name: userData.name || "", profilePhoto: null });
+    setPreviewPhoto(profileImage);
+    setIsEditOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditOpen(false);
+    setFormData({ name: "", profilePhoto: null });
+    setPreviewPhoto(profileImage);
+  };
+
+  const handleNameChange = (e) => {
+    setFormData({ ...formData, name: e.target.value });
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, profilePhoto: file });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewPhoto(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveChanges = () => {
+    // Handle save logic here - currently just closing modal
+    console.log("Saving changes:", formData);
+    closeEditModal();
+  };
   return (
     <>
       <Navbar />
@@ -48,7 +87,7 @@ const Profile = () => {
               <p className="user-email">{userData.email}</p>
             </div>
           </div>
-          <button className="edit-btn">Edit Profile</button>
+          <button className="edit-btn" onClick={openEditModal}>Edit Profile</button>
         </header>
 
         <main className="profile-main">
@@ -62,7 +101,7 @@ const Profile = () => {
                   <p className="empty-action">
                     Write your first blog to get started.
                   </p>
-                  <button className="write-btn">Write a Blog</button>
+                  <button className="write-btn" onClick={()=>navigate('/createpost')}>Write a Blog</button>
                 </div>
               </div>
             ) : (
@@ -79,6 +118,51 @@ const Profile = () => {
         </main>
       </div>
       <Footer />
+
+      {/* Edit Modal */}
+      {isEditOpen && (
+        <div className="modal-overlay" onClick={closeEditModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Edit Profile</h2>
+              <button className="modal-close" onClick={closeEditModal}>×</button>
+            </div>
+
+            <div className="modal-body">
+              <div className="photo-section">
+                <img src={previewPhoto} alt="preview" className="preview-photo" />
+                <label htmlFor="photo-input" className="photo-upload-label">
+                  Change Photo
+                </label>
+                <input
+                  id="photo-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  className="hidden-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="name-input">Full Name</label>
+                <input
+                  id="name-input"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleNameChange}
+                  placeholder="Enter your full name"
+                  className="input-field"
+                />
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={closeEditModal}>Cancel</button>
+              <button className="save-btn" onClick={handleSaveChanges}>Save Changes</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
