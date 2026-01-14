@@ -81,7 +81,7 @@ const Profile = () => {
       <div className="profile">
         <header className="profile-header">
           <div className="profile-header-left">
-            <img src={profileImage} alt="avatar" className="avatar" />
+            <img src={userData.profileImg || profileImage} alt="avatar" className="avatar" />
             <div className="user-basic">
               <h2 className="user-name">{userData.name}</h2>
               <p className="user-email">{userData.email}</p>
@@ -107,8 +107,16 @@ const Profile = () => {
             ) : (
               <div>
                 {userBlogs.map((blog) => (
-                  <div className="post-card" key={blog._id}>
-                    <img src={blog.image} />
+                  <div
+                    className="post-card"
+                    key={blog._id}
+                    onClick={() => navigate(`/post/${blog._id}`)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => e.key === 'Enter' && navigate(`/post/${blog._id}`)}
+                  >
+                    <img src={blog.image || profileImage} alt={blog.title} />
+                    <div className="post-overlay" />
                     <h4 className="post-title">{blog.title}</h4>
                   </div>
                 ))}
